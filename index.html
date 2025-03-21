@@ -1,12 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <link rel="icon" type="image/png" href="https://img.icons8.com/ios-filled/32/000000/clapperboard.png">
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Movie Database</title>
-    
+
     <style>
         :root {
             --primary-color: #032541;
@@ -33,9 +34,10 @@
             background-color: var(--primary-color);
             color: white;
             padding: 1rem;
-            
+            position: sticky;
             top: 0;
             z-index: 10;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
 
         .container {
@@ -170,8 +172,13 @@
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
         }
 
         .modal-content {
@@ -184,11 +191,20 @@
             overflow: hidden;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
             animation: slideIn 0.3s;
+            max-height: 90vh;
+            overflow-y: auto;
         }
 
         @keyframes slideIn {
-            from { transform: translateY(-50px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
         }
 
         .modal-header {
@@ -208,9 +224,10 @@
             position: absolute;
             width: 200px;
             border-radius: 10px;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
             left: 50px;
             bottom: -50px;
+            border: 3px solid white;
         }
 
         .modal-info {
@@ -221,6 +238,7 @@
         .modal-title {
             font-size: 1.8rem;
             margin-bottom: 0.5rem;
+            color: var(--primary-color);
         }
 
         .modal-details {
@@ -262,6 +280,9 @@
             font-size: 1.2rem;
             margin-bottom: 1rem;
             color: var(--primary-color);
+            border-bottom: 2px solid var(--secondary-color);
+            padding-bottom: 0.5rem;
+            display: inline-block;
         }
 
         .watch-options {
@@ -278,11 +299,13 @@
             padding: 0.5rem 1rem;
             border-radius: 5px;
             font-size: 0.9rem;
-            transition: background-color 0.3s;
+            transition: background-color 0.3s, transform 0.2s;
         }
 
         .watch-option:hover {
             background-color: #d0f0f7;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
         }
 
         .watch-provider-logo {
@@ -304,6 +327,18 @@
             font-size: 2rem;
             cursor: pointer;
             z-index: 10;
+            background-color: rgba(0, 0, 0, 0.3);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.3s;
+        }
+
+        .close:hover {
+            background-color: rgba(0, 0, 0, 0.6);
         }
 
         .loader {
@@ -324,8 +359,13 @@
         }
 
         @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
         }
 
         .genre-pills {
@@ -341,6 +381,7 @@
             padding: 0.3rem 0.8rem;
             border-radius: 20px;
             font-size: 0.8rem;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
         }
 
         .tabs {
@@ -354,6 +395,7 @@
             cursor: pointer;
             border-bottom: 3px solid transparent;
             transition: all 0.3s;
+            font-weight: 500;
         }
 
         .tab.active {
@@ -380,6 +422,13 @@
             border-radius: 10px;
             overflow: hidden;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+
+        .cast-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
         }
 
         .cast-img {
@@ -399,6 +448,7 @@
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+            color: var(--primary-color);
         }
 
         .cast-character {
@@ -414,9 +464,10 @@
                 width: 95%;
                 margin: 10% auto;
             }
+
             .header-content {
-            flex-direction: column;
-            gap: 1rem;
+                flex-direction: column;
+                gap: 1rem;
             }
 
             .modal-poster {
@@ -445,50 +496,134 @@
             padding: 1.5rem;
             margin-top: 3rem;
         }
-            /* Style for the watch option links */
-    .watch-option {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        background-color: var(--hover-color);
-        padding: 0.5rem 1rem;
-        border-radius: 5px;
-        font-size: 0.9rem;
-        transition: background-color 0.3s;
-        text-decoration: none;
-        color: var(--text-color);
-    }
 
-    .watch-option:hover {
-        background-color: #d0f0f7;
-    }
+        /* Style for the watch option links */
+        .watch-option {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background-color: var(--hover-color);
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            transition: background-color 0.3s;
+            text-decoration: none;
+            color: var(--text-color);
+        }
+
+        .watch-option:hover {
+            background-color: #d0f0f7;
+        }
+
+        /* Genre Filter Container - Improved */
+        .genre-filter {
+            display: flex;
+            justify-content: center;
+            gap: 0.8rem;
+            flex-wrap: wrap;
+            margin-bottom: 1.5rem;
+            padding: 1.2rem;
+            border-radius: 12px;
+            background: linear-gradient(to right, rgba(3, 37, 65, 0.05), rgba(1, 180, 228, 0.05));
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Genre Buttons Styling - Improved */
+        .genre-button {
+            background: linear-gradient(135deg, #032541, #01b4e4);
+            color: #fff;
+            padding: 0.7rem 1.4rem;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            text-transform: capitalize;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+            font-weight: 500;
+            letter-spacing: 0.5px;
+        }
+
+        /* Hover Effect */
+        .genre-button:hover {
+            transform: translateY(-3px);
+            background: linear-gradient(135deg, #01b4e4, #006d91);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Active Button */
+        .genre-button.active {
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            color: #00a8cc;
+            font-weight: bold;
+            box-shadow: 0 0 15px rgba(0, 168, 204, 0.7);
+        }
+
+
+
+
+
+
+        /* Tablet Styling */
+        @media (max-width: 1024px) {
+            .genre-filter {
+                gap: 0.7rem;
+                padding: 1rem;
+            }
+
+            .genre-button {
+                padding: 0.6rem 1.2rem;
+                font-size: 0.85rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .genre-button {
+                padding: 0.5rem 1rem;
+                font-size: 0.8rem;
+            }
+        }
+
+        /* Tiny Screens */
+        @media (max-width: 480px) {
+            .genre-filter {
+                gap: 0.5rem;
+                padding: 0.8rem;
+            }
+
+            .genre-button {
+                padding: 0.4rem 0.8rem;
+                font-size: 0.75rem;
+            }
+        }
 
         /* Custom Scrollbar Styling */
         ::-webkit-scrollbar {
-            height: 2px;
-            width: 2px;
+            height: 6px;
+            width: 6px;
         }
 
         ::-webkit-scrollbar-track {
-            background: #ddd;
-            border-radius: 20px;
+            background: #eee;
+            border-radius: 10px;
         }
 
         ::-webkit-scrollbar-thumb {
-            background: linear-gradient(45deg,  #032541, #ff0080);
+            background: linear-gradient(45deg, #032541, #01b4e4);
             border-radius: 10px;
         }
 
         ::-webkit-scrollbar-thumb:hover {
-            background: linear-gradient(45deg,  #032541, #c71585);
+            background: linear-gradient(45deg, #032541, #01b4e4);
         }
     </style>
 </head>
+
 <body>
     <header>
         <div class="container">
             <div class="header-content">
-                <a href="#" class="logo">Movie<span>Details</span></a>
+                <a href="#" class="logo" id="home-link">Movie<span>Details</span></a>
                 <div class="search-container">
                     <input type="text" class="search-input" placeholder="Search for movies...">
                     <button class="search-button">Search</button>
@@ -496,6 +631,11 @@
             </div>
         </div>
     </header>
+    <div class="container">
+        <div class="genre-filter" id="genre-filter">
+            <!-- Genre buttons will be added here -->
+        </div>
+    </div>
 
     <main class="container">
         <h2 class="section-title">Popular Movies</h2>
@@ -503,7 +643,7 @@
             <div class="loader"></div>
         </div>
 
-        <h2 class="section-title">Top Rated Movies</h2>
+        <h2 class="section-title" id="top-rated-section">Top Rated Movies</h2>
         <div class="movies-grid" id="top-rated-movies">
             <div class="loader"></div>
         </div>
@@ -558,376 +698,510 @@
                         <p id="production-countries"></p>
                         <p id="budget"></p>
                         <p id="revenue"></p>
-
-
-                      </div>
                     </div>
                 </div>
             </div>
         </div>
-    
-        <footer>
-            <div class="container">
-                <p>© 2025 MovieDetails - Powered by TMDB API</p>
-            </div>
-        </footer>
-    
-        <script>
-            // TMDB API Configuration
-            const API_KEY = '98a5ef856044b2a76975a5a91cfdee97'; // Replace with your actual TMDB API key
-            const BASE_URL = 'https://api.themoviedb.org/3';
-            const IMG_URL = 'https://image.tmdb.org/t/p/w500';
-            const BACKDROP_URL = 'https://image.tmdb.org/t/p/original';
-    
-            // DOM Elements
-            const popularMoviesEl = document.getElementById('popular-movies');
-            const topRatedMoviesEl = document.getElementById('top-rated-movies');
-            const searchInput = document.querySelector('.search-input');
-            const searchButton = document.querySelector('.search-button');
-            const modal = document.getElementById('movie-modal');
-            const closeBtn = document.querySelector('.close');
-            const tabs = document.querySelectorAll('.tab');
-            const tabContents = document.querySelectorAll('.tab-content');
-    
-            // Event Listeners
-            document.addEventListener('DOMContentLoaded', () => {
-                getMovies('movie/popular', popularMoviesEl);
-                getMovies('movie/top_rated', topRatedMoviesEl);
-            });
-    
-            searchButton.addEventListener('click', () => {
-                const searchTerm = searchInput.value.trim();
-                if (searchTerm) {
-                    popularMoviesEl.innerHTML = '<div class="loader"></div>';
-                    topRatedMoviesEl.innerHTML = '';
-                    document.querySelector('.section-title').textContent = `Search Results for "${searchTerm}"`;
-                    searchMovies(searchTerm);
-                }
-            });
-    
-            searchInput.addEventListener('keyup', (e) => {
-                if (e.key === 'Enter') {
-                    searchButton.click();
-                }
-            });
-    
-            closeBtn.addEventListener('click', () => {
-                modal.style.display = 'none';
-                document.body.style.overflow = 'auto';
-            });
-    
-            window.addEventListener('click', (e) => {
-                if (e.target === modal) {
-                    modal.style.display = 'none';
-                    document.body.style.overflow = 'auto';
-                }
-            });
-    
-            tabs.forEach(tab => {
-                tab.addEventListener('click', () => {
-                    tabs.forEach(t => t.classList.remove('active'));
-                    tab.classList.add('active');
-                    
-                    const tabId = tab.getAttribute('data-tab');
-                    tabContents.forEach(content => {
-                        content.classList.remove('active');
-                        if (content.id === tabId) {
-                            content.classList.add('active');
-                        }
-                    });
-                });
-            });
-    
-            // Functions
-            async function getMovies(endpoint, element) {
-                try {
-                    const response = await fetch(`${BASE_URL}/${endpoint}?api_key=${API_KEY}&language=en-US&page=1`);
-                    const data = await response.json();
-                    displayMovies(data.results, element);
-                } catch (error) {
-                    console.error('Error fetching movies:', error);
-                    element.innerHTML = '<p>Error loading movies. Please try again later.</p>';
-                }
+    </div>
+
+    <footer>
+        <p>© 2025 MovieDetails - Powered by TMDB API</p>
+    </footer>
+
+    <script>
+        // TMDB API Configuration
+        const API_KEY = '98a5ef856044b2a76975a5a91cfdee97'; // Replace with your actual TMDB API key
+        const BASE_URL = 'https://api.themoviedb.org/3';
+        const IMG_URL = 'https://image.tmdb.org/t/p/w500';
+        const BACKDROP_URL = 'https://image.tmdb.org/t/p/original';
+
+        // DOM Elements
+        const popularMoviesEl = document.getElementById('popular-movies');
+        const topRatedMoviesEl = document.getElementById('top-rated-movies');
+        const topRatedSectionEl = document.getElementById('top-rated-section');
+        const searchInput = document.querySelector('.search-input');
+        const searchButton = document.querySelector('.search-button');
+        const modal = document.getElementById('movie-modal');
+        const closeBtn = document.querySelector('.close');
+        const tabs = document.querySelectorAll('.tab');
+        const tabContents = document.querySelectorAll('.tab-content');
+        const homeLink = document.getElementById('home-link');
+
+        // Event Listeners
+        document.addEventListener('DOMContentLoaded', async () => {
+            getMovies('movie/popular', popularMoviesEl);
+            getMovies('movie/top_rated', topRatedMoviesEl);
+
+            const genres = await fetchGenres();
+            displayGenreFilters(genres);
+        });
+
+        homeLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            resetToHomePage();
+        });
+
+        searchButton.addEventListener('click', () => {
+            const searchTerm = searchInput.value.trim();
+            if (searchTerm) {
+                popularMoviesEl.innerHTML = '<div class="loader"></div>';
+                document.querySelector('.section-title').textContent = `Search Results for "${searchTerm}"`;
+                // Hide top rated section when displaying search results
+                topRatedSectionEl.style.display = 'none';
+                topRatedMoviesEl.style.display = 'none';
+                searchMovies(searchTerm);
             }
-    
-            async function searchMovies(query) {
-                try {
-                    const response = await fetch(`${BASE_URL}/search/movie?api_key=${API_KEY}&language=en-US&query=${query}&page=1&include_adult=false`);
-                    const data = await response.json();
-                    
-                    if (data.results.length === 0) {
-                        popularMoviesEl.innerHTML = '<p>No results found for your search.</p>';
-                        return;
+        });
+
+        searchInput.addEventListener('keyup', (e) => {
+            if (e.key === 'Enter') {
+                searchButton.click();
+            }
+        });
+
+        closeBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            closeModal();
+        });
+
+        window.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                closeModal();
+            }
+        });
+
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                tabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+
+                const tabId = tab.getAttribute('data-tab');
+                tabContents.forEach(content => {
+                    content.classList.remove('active');
+                    if (content.id === tabId) {
+                        content.classList.add('active');
                     }
-                    
-                    displayMovies(data.results, popularMoviesEl);
-                } catch (error) {
-                    console.error('Error searching movies:', error);
-                    popularMoviesEl.innerHTML = '<p>Error searching movies. Please try again later.</p>';
-                }
-            }
-    
-            function displayMovies(movies, element) {
-                element.innerHTML = '';
-                
-                movies.forEach(movie => {
-                    const posterPath = movie.poster_path 
-                        ? `${IMG_URL}${movie.poster_path}` 
-                        : '/api/placeholder/200/300';
-                        
-                    const movieCard = document.createElement('div');
-                    movieCard.classList.add('movie-card');
-                    movieCard.addEventListener('click', () => openMovieModal(movie.id));
-                    
-                    movieCard.innerHTML = `
-                        <img class="movie-poster" src="${posterPath}" alt="${movie.title}">
-                        <div class="movie-info">
-                            <h3 class="movie-title">${movie.title}</h3>
-                            <p class="movie-release-date">${formatDate(movie.release_date)}</p>
-                            <div class="rating">${movie.vote_average.toFixed(1)}</div>
-                        </div>
-                    `;
-                    
-                    element.appendChild(movieCard);
                 });
-            }
-    
-            async function openMovieModal(movieId) {
-    try {
-        document.body.style.overflow = 'hidden';
-        modal.style.display = 'block';
-        
-        // Reset modal content
-        document.getElementById('modal-title').textContent = 'Loading...';
-        document.getElementById('modal-overview').textContent = '';
-        document.getElementById('modal-year').textContent = '';
-        document.getElementById('modal-runtime').textContent = '';
-        document.getElementById('modal-rating').textContent = '';
-        document.getElementById('modal-genres').innerHTML = '';
-        document.getElementById('stream-options').innerHTML = '<div class="loader"></div>';
-        document.getElementById('rent-options').innerHTML = '';
-        document.getElementById('buy-options').innerHTML = '';
-        document.getElementById('cast-grid').innerHTML = '<div class="loader"></div>';
-        document.getElementById('production-companies').textContent = '';
-        document.getElementById('production-countries').textContent = '';
-        document.getElementById('budget').textContent = '';
-        document.getElementById('revenue').textContent = '';
-        
-        // Fetch movie details
-        const movieDetails = await fetch(`${BASE_URL}/movie/${movieId}?api_key=${API_KEY}&language=en-US`);
-        const movieData = await movieDetails.json();
-        
-        // Fetch watch providers
-        const watchProviders = await fetch(`${BASE_URL}/movie/${movieId}/watch/providers?api_key=${API_KEY}`);
-        const providerData = await watchProviders.json();
-        
-        // Fetch cast
-        const credits = await fetch(`${BASE_URL}/movie/${movieId}/credits?api_key=${API_KEY}`);
-        const creditData = await credits.json();
-        
-        // Extract movie year for search purposes
-        const movieYear = movieData.release_date ? movieData.release_date.substring(0, 4) : '';
-        
-        displayMovieDetails(movieData);
-        displayWatchProviders(providerData.results, movieData.title, movieYear);
-        displayCast(creditData.cast);
-    } catch (error) {
-        console.error('Error opening movie modal:', error);
-    }
-}
-    
-            function displayMovieDetails(movie) {
-                const backdropPath = movie.backdrop_path 
-                    ? `${BACKDROP_URL}${movie.backdrop_path}` 
-                    : '/api/placeholder/900/300';
-                    
-                const posterPath = movie.poster_path 
-                    ? `${IMG_URL}${movie.poster_path}` 
-                    : '/api/placeholder/200/300';
-                
-                document.getElementById('modal-backdrop').src = backdropPath;
-                document.getElementById('modal-poster').src = posterPath;
-                document.getElementById('modal-title').textContent = movie.title;
-                document.getElementById('modal-overview').textContent = movie.overview;
-                document.getElementById('modal-year').textContent = movie.release_date ? movie.release_date.substring(0, 4) : 'N/A';
-                document.getElementById('modal-runtime').textContent = movie.runtime ? `${movie.runtime} min` : 'N/A';
-                document.getElementById('modal-rating').textContent = `${movie.vote_average.toFixed(1)} (${movie.vote_count} votes)`;
-                
-                // Display genres
-                const genresEl = document.getElementById('modal-genres');
-                genresEl.innerHTML = '';
-                movie.genres.forEach(genre => {
-                    const genrePill = document.createElement('span');
-                    genrePill.classList.add('genre-pill');
-                    genrePill.textContent = genre.name;
-                    genresEl.appendChild(genrePill);
-                });
-                
-                // Display production info
-                const companies = movie.production_companies.map(company => company.name).join(', ');
-                const countries = movie.production_countries.map(country => country.name).join(', ');
-                const budget = movie.budget > 0 ? `$${(movie.budget / 1000000).toFixed(1)} million` : 'Not available';
-                const revenue = movie.revenue > 0 ? `$${(movie.revenue / 1000000).toFixed(1)} million` : 'Not available';
-                
-                document.getElementById('production-companies').textContent = `Production Companies: ${companies || 'Not available'}`;
-                document.getElementById('production-countries').textContent = `Production Countries: ${countries || 'Not available'}`;
-                document.getElementById('budget').textContent = `Budget: ${budget}`;
-                document.getElementById('revenue').textContent = `Revenue: ${revenue}`;
-            }
-    
-            function displayWatchProviders(providers, movieTitle, movieYear) {
-    const streamEl = document.getElementById('stream-options');
-    const rentEl = document.getElementById('rent-options');
-    const buyEl = document.getElementById('buy-options');
-    
-    streamEl.innerHTML = '';
-    rentEl.innerHTML = '';
-    buyEl.innerHTML = '';
-    
-    // Get US providers (or fall back to first available country)
-    const countryCode = providers.US ? 'US' : Object.keys(providers)[0];
-    
-    if (!countryCode) {
-        streamEl.innerHTML = '<p>No watch options available for this title.</p>';
-        return;
-    }
-    
-    const countryProviders = providers[countryCode];
-    
-    // Display streaming options
-    if (countryProviders?.flatrate?.length) {
-        displayProviderOptions(countryProviders.flatrate, streamEl, movieTitle, movieYear);
-    } else {
-        streamEl.innerHTML = '<p>Not available for streaming.</p>';
-    }
-    
-    // Display rental options
-    if (countryProviders?.rent?.length) {
-        displayProviderOptions(countryProviders.rent, rentEl, movieTitle, movieYear);
-    } else {
-        rentEl.innerHTML = '<p>Not available for rent.</p>';
-    }
-    
-    // Display purchase options
-    if (countryProviders?.buy?.length) {
-        displayProviderOptions(countryProviders.buy, buyEl, movieTitle, movieYear);
-    } else {
-        buyEl.innerHTML = '<p>Not available for purchase.</p>';
-    }
-}
-    
-            function displayProviderOptions(options, element, movieTitle, movieYear) {
-    options.forEach(provider => {
-        // Create an anchor element instead of a div
-        const optionEl = document.createElement('a');
-        optionEl.classList.add('watch-option');
-        
-        // Encode the movie title for use in URLs
-        const encodedTitle = encodeURIComponent(movieTitle);
-        const encodedTitleWithYear = encodeURIComponent(`${movieTitle} ${movieYear}`);
-        
-        // Set href based on provider with specific movie search
-        let providerUrl = '#';
-        
-        // Map common providers to their specific movie search pages
-        switch(provider.provider_name.toLowerCase()) {
-            case 'netflix':
-                providerUrl = `https://www.netflix.com/search?q=${encodedTitle}`;
-                break;
-            case 'amazon prime video':
-            case 'amazon prime':
-            case 'prime video':
-                providerUrl = `https://www.amazon.com/s?k=${encodedTitleWithYear}+prime+video`;
-                break;
-            case 'disney plus':
-            case 'disney+':
-                providerUrl = `https://www.disneyplus.com/search?q=${encodedTitle}`;
-                break;
-            case 'hulu':
-                providerUrl = `https://www.hulu.com/search?q=${encodedTitle}`;
-                break;
-            case 'hbo max':
-            case 'max':
-                providerUrl = `https://www.max.com/search?q=${encodedTitle}`;
-                break;
-            case 'apple tv':
-            case 'apple tv+':
-                providerUrl = `https://tv.apple.com/search?term=${encodedTitle}`;
-                break;
-            case 'peacock':
-                providerUrl = `https://www.peacocktv.com/search?q=${encodedTitle}`;
-                break;
-            case 'paramount+':
-            case 'paramount plus':
-                providerUrl = `https://www.paramountplus.com/search/?q=${encodedTitle}`;
-                break;
-            case 'youtube':
-                providerUrl = `https://www.youtube.com/results?search_query=${encodedTitleWithYear}+full+movie`;
-                break;
-            case 'google play':
-            case 'google play movies':
-                providerUrl = `https://play.google.com/store/search?q=${encodedTitleWithYear}&c=movies`;
-                break;
-            case 'vudu':
-                providerUrl = `https://www.vudu.com/content/movies/search?searchString=${encodedTitle}`;
-                break;
-            case 'justwatch':
-                providerUrl = `https://www.justwatch.com/us/search?q=${encodedTitle}`;
-                break;
-            default:
-                // For other providers, we'll use a general search query
-                providerUrl = `https://www.google.com/search?q=watch+${encodedTitleWithYear}+on+${encodeURIComponent(provider.provider_name)}`;
+            });
+        });
+
+        // Functions
+        function resetToHomePage() {
+            document.querySelector('.section-title').textContent = 'Popular Movies';
+            topRatedSectionEl.textContent = 'Top Rated Movies';
+            topRatedSectionEl.style.display = 'block';
+            topRatedMoviesEl.style.display = 'grid';
+
+            getMovies('movie/popular', popularMoviesEl);
+            getMovies('movie/top_rated', topRatedMoviesEl);
+
+            // Reset active genre button
+            const genreButtons = document.querySelectorAll('.genre-button');
+            genreButtons.forEach(button => button.classList.remove('active'));
+            genreButtons[0].classList.add('active'); // Set 'All' button as active
         }
-        
-        optionEl.href = providerUrl;
-        optionEl.target = "_blank";  // Open in new tab
-        
-        const logoPath = provider.logo_path 
-            ? `${IMG_URL}${provider.logo_path}` 
-            : '/api/placeholder/30/30';
-        
-        optionEl.innerHTML = `
-            <img class="watch-provider-logo" src="${logoPath}" alt="${provider.provider_name}">
-            <span class="watch-provider-name">${provider.provider_name}</span>
-        `;
-        
-        element.appendChild(optionEl);
-    });
-}
-    
-            function displayCast(cast) {
-                const castEl = document.getElementById('cast-grid');
-                castEl.innerHTML = '';
-                
-                // Display up to 10 cast members
-                const topCast = cast.slice(0, 10);
-                
-                topCast.forEach(person => {
-                    const profilePath = person.profile_path 
-                        ? `${IMG_URL}${person.profile_path}` 
-                        : '/api/placeholder/100/150';
-                    
-                    const castCard = document.createElement('div');
-                    castCard.classList.add('cast-card');
-                    
-                    castCard.innerHTML = `
-                        <img class="cast-img" src="${profilePath}" alt="${person.name}">
-                        <div class="cast-info">
-                            <h4 class="cast-name">${person.name}</h4>
-                            <p class="cast-character">${person.character}</p>
-                        </div>
-                    `;
-                    
-                    castEl.appendChild(castCard);
+
+        function closeModal() {
+            modal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        async function fetchGenres() {
+            try {
+                const response = await fetch(`${BASE_URL}/genre/movie/list?api_key=${API_KEY}&language=en-US`);
+                const data = await response.json();
+                return data.genres; // Returns an array of genre objects
+            } catch (error) {
+                console.error('Error fetching genres:', error);
+                return []; // Return an empty array in case of error
+            }
+        }
+
+        function displayGenreFilters(genres) {
+            const filterContainer = document.getElementById('genre-filter');
+            filterContainer.innerHTML = ''; // Clear any existing filters
+
+            const allButton = document.createElement('button');
+            allButton.textContent = 'All';
+            allButton.classList.add('genre-button');
+            allButton.classList.add('active'); // 'All' is initially active
+            allButton.addEventListener('click', () => {
+                resetToHomePage();
+            });
+            filterContainer.appendChild(allButton);
+
+            genres.forEach(genre => {
+                const genreButton = document.createElement('button');
+                genreButton.textContent = genre.name;
+                genreButton.classList.add('genre-button');
+                genreButton.setAttribute('data-genre-id', genre.id);
+                genreButton.addEventListener('click', () => {
+                    filterMoviesByGenre(genre.id, genre.name);
+                    // Remove active class from other genre buttons
+                    const genreButtons = document.querySelectorAll('.genre-button');
+                    genreButtons.forEach(button => button.classList.remove('active'));
+                    genreButton.classList.add('active');
                 });
+                filterContainer.appendChild(genreButton);
+            });
+        }
+
+        async function filterMoviesByGenre(genreId, genreName) {
+            try {
+                popularMoviesEl.innerHTML = '<div class="loader"></div>';
+                document.querySelector('.section-title').textContent = `${genreName} Movies`;
+
+                // Hide top rated section when filtering by genre
+                topRatedSectionEl.style.display = 'none';
+                topRatedMoviesEl.style.display = 'none';
+
+                const response = await fetch(`${BASE_URL}/discover/movie?api_key=${API_KEY}&language=en-US&sort_by=popularity.desc&include_adult=false&include_video=false&page=1&with_genres=${genreId}`);
+                const data = await response.json();
+                displayMovies(data.results, popularMoviesEl);
+            } catch (error) {
+                console.error('Error fetching movies by genre:', error);
+                popularMoviesEl.innerHTML = '<p>Error loading movies. Please try again later.</p>';
             }
-    
-            function formatDate(dateString) {
-                if (!dateString) return 'Unknown';
-                
-                const options = { year: 'numeric', month: 'short', day: 'numeric' };
-                return new Date(dateString).toLocaleDateString('en-US', options);
+        }
+
+        async function getMovies(endpoint, element) {
+            try {
+                element.innerHTML = '<div class="loader"></div>';
+                const response = await fetch(`${BASE_URL}/${endpoint}?api_key=${API_KEY}&language=en-US&page=1`);
+                const data = await response.json();
+                displayMovies(data.results, element);
+            } catch (error) {
+                console.error('Error fetching movies:', error);
+                element.innerHTML = '<p>Error loading movies. Please try again later.</p>';
             }
-        </script>
-    </body>
-    </html>
+        }
+
+        async function searchMovies(query) {
+            try {
+                const response = await fetch(`${BASE_URL}/search/movie?api_key=${API_KEY}&language=en-US&query=${query}&page=1&include_adult=false`);
+                const data = await response.json();
+
+                if (data.results.length === 0) {
+                    popularMoviesEl.innerHTML = '<p>No results found for your search.</p>';
+                    return;
+                }
+
+                displayMovies(data.results, popularMoviesEl);
+            } catch (error) {
+                console.error('Error searching movies:', error);
+                popularMoviesEl.innerHTML = '<p>Error searching movies. Please try again later.</p>';
+            }
+        }
+
+        function displayMovies(movies, element) {
+            element.innerHTML = '';
+
+            movies.forEach(movie => {
+                const posterPath = movie.poster_path
+                    ? `${IMG_URL}${movie.poster_path}`
+                    : '/api/placeholder/200/300';
+
+                const movieCard = document.createElement('div');
+                movieCard.classList.add('movie-card');
+
+                // Using arrow function to maintain proper context
+                movieCard.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    openMovieModal(movie.id);
+                });
+
+                movieCard.innerHTML = `
+                    <img class="movie-poster" src="${posterPath}" alt="${movie.title}">
+                    <div class="movie-info">
+                        <h3 class="movie-title">${movie.title}</h3>
+                        <p class="movie-release-date">${formatDate(movie.release_date)}</p>
+                        <div class="rating">${movie.vote_average ? movie.vote_average.toFixed(1) : 'N/A'}</div>
+                    </div>
+                `;
+
+                element.appendChild(movieCard);
+            });
+        }
+
+        async function openMovieModal(movieId) {
+            try {
+                // Prevent scrolling of the background
+                document.body.style.overflow = 'hidden';
+
+                // Display the modal
+                modal.style.display = 'block';
+
+                // Reset modal content with loading indicators
+                document.getElementById('modal-title').textContent = 'Loading...';
+                document.getElementById('modal-overview').textContent = '';
+                document.getElementById('modal-year').textContent = '';
+                document.getElementById('modal-runtime').textContent = '';
+                document.getElementById('modal-rating').textContent = '';
+                document.getElementById('modal-genres').innerHTML = '';
+                document.getElementById('stream-options').innerHTML = '<div class="loader"></div>';
+                document.getElementById('rent-options').innerHTML = '';
+                document.getElementById('buy-options').innerHTML = '';
+                document.getElementById('cast-grid').innerHTML = '<div class="loader"></div>';
+                document.getElementById('production-companies').textContent = '';
+                document.getElementById('production-countries').textContent = '';
+                document.getElementById('budget').textContent = '';
+                document.getElementById('revenue').textContent = '';
+
+                // Fetch all required data in parallel for better performance
+                const [movieDetailsResponse, watchProvidersResponse, creditsResponse] = await Promise.all([
+                    fetch(`${BASE_URL}/movie/${movieId}?api_key=${API_KEY}&language=en-US`),
+                    fetch(`${BASE_URL}/movie/${movieId}/watch/providers?api_key=${API_KEY}`),
+                    fetch(`${BASE_URL}/movie/${movieId}/credits?api_key=${API_KEY}`)
+                ]);
+
+                // Convert responses to JSON
+                const movieData = await movieDetailsResponse.json();
+                const providerData = await watchProvidersResponse.json();
+                const creditData = await creditsResponse.json();
+
+                // Extract movie year for search purposes
+                const movieYear = movieData.release_date ? movieData.release_date.substring(0, 4) : '';
+
+                // Set active tab to "Watch Options" by default
+                tabs.forEach(tab => tab.classList.remove('active'));
+                tabContents.forEach(content => content.classList.remove('active'));
+                document.querySelector('[data-tab="watch-options"]').classList.add('active');
+                document.getElementById('watch-options').classList.add('active');
+
+                // Display the fetched data
+                displayMovieDetails(movieData);
+                displayWatchProviders(providerData.results, movieData.title, movieYear);
+                displayCast(creditData.cast);
+
+                // Add analytics event (if you have analytics)
+                if (typeof gtag !== 'undefined') {
+                    gtag('event', 'view_movie_details', {
+                        'movie_id': movieId,
+                        'movie_title': movieData.title
+                    });
+                }
+            } catch (error) {
+                console.error('Error opening movie modal:', error);
+                document.getElementById('modal-title').textContent = 'Error loading movie details';
+                document.getElementById('modal-overview').textContent = 'There was a problem loading this movie. Please try again later.';
+            }
+        }
+        async function displayMovieDetails(movie) {
+            const backdropPath = movie.backdrop_path
+                ? `${BACKDROP_URL}${movie.backdrop_path}`
+                : '/api/placeholder/900/300';
+
+            const posterPath = movie.poster_path
+                ? `${IMG_URL}${movie.poster_path}`
+                : '/api/placeholder/200/300';
+
+            document.getElementById('modal-backdrop').src = backdropPath;
+            document.getElementById('modal-poster').src = posterPath;
+            document.getElementById('modal-title').textContent = movie.title;
+            document.getElementById('modal-overview').textContent = movie.overview;
+            document.getElementById('modal-year').textContent = movie.release_date ? movie.release_date.substring(0, 4) : 'N/A';
+            document.getElementById('modal-runtime').textContent = movie.runtime ? `${movie.runtime} min` : 'N/A';
+            document.getElementById('modal-rating').textContent = `${movie.vote_average.toFixed(1)} (${movie.vote_count} votes)`;
+
+            // Display genres
+            const genresEl = document.getElementById('modal-genres');
+            genresEl.innerHTML = '';
+            movie.genres.forEach(genre => {
+                const genrePill = document.createElement('span');
+                genrePill.classList.add('genre-pill');
+                genrePill.textContent = genre.name;
+                genresEl.appendChild(genrePill);
+            });
+
+            // Display production info
+            const companies = movie.production_companies.map(company => company.name).join(', ');
+            const countries = movie.production_countries.map(country => country.name).join(', ');
+            const budget = movie.budget > 0 ? `$${(movie.budget / 1000000).toFixed(1)} million` : 'Not available';
+            const revenue = movie.revenue > 0 ? `$${(movie.revenue / 1000000).toFixed(1)} million` : 'Not available';
+
+            document.getElementById('production-companies').textContent = `Production Companies: ${companies || 'Not available'}`;
+            document.getElementById('production-countries').textContent = `Production Countries: ${countries || 'Not available'}`;
+            document.getElementById('budget').textContent = `Budget: ${budget}`;
+            document.getElementById('revenue').textContent = `Revenue: ${revenue}`;
+        }
+        function formatDate(dateString) {
+            if (!dateString) return 'N/A';
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+        }
+
+        async function displayWatchProviders(providers, movieTitle, movieYear) {
+            const streamOptionsEl = document.getElementById('stream-options');
+            const rentOptionsEl = document.getElementById('rent-options');
+            const buyOptionsEl = document.getElementById('buy-options');
+
+            // Clear previous content
+            streamOptionsEl.innerHTML = '';
+            rentOptionsEl.innerHTML = '';
+            buyOptionsEl.innerHTML = '';
+
+            // Check if we have US provider data
+            if (providers && providers.US) {
+                const usProviders = providers.US;
+
+                // Display streaming options
+                if (usProviders.flatrate && usProviders.flatrate.length > 0) {
+                    usProviders.flatrate.forEach(provider => {
+                        const providerEl = createProviderElement(provider, movieTitle, movieYear);
+                        streamOptionsEl.appendChild(providerEl);
+                    });
+                } else {
+                    streamOptionsEl.innerHTML = '<p>No streaming options available</p>';
+                }
+
+                // Display rental options
+                if (usProviders.rent && usProviders.rent.length > 0) {
+                    usProviders.rent.forEach(provider => {
+                        const providerEl = createProviderElement(provider, movieTitle, movieYear);
+                        rentOptionsEl.appendChild(providerEl);
+                    });
+                } else {
+                    rentOptionsEl.innerHTML = '<p>No rental options available</p>';
+                }
+
+                // Display purchase options
+                if (usProviders.buy && usProviders.buy.length > 0) {
+                    usProviders.buy.forEach(provider => {
+                        const providerEl = createProviderElement(provider, movieTitle, movieYear);
+                        buyOptionsEl.appendChild(providerEl);
+                    });
+                } else {
+                    buyOptionsEl.innerHTML = '<p>No purchase options available</p>';
+                }
+            } else {
+                streamOptionsEl.innerHTML = '<p>No streaming options available</p>';
+                rentOptionsEl.innerHTML = '<p>No rental options available</p>';
+                buyOptionsEl.innerHTML = '<p>No purchase options available</p>';
+            }
+        }
+
+        function createProviderElement(provider, movieTitle, movieYear) {
+            const providerLogo = provider.logo_path
+                ? `${IMG_URL}${provider.logo_path}`
+                : '/api/placeholder/50/50';
+
+            const searchQuery = encodeURIComponent(`${movieTitle} ${movieYear}`);
+            const providerName = provider.provider_name;
+
+            const providerEl = document.createElement('a');
+            providerEl.classList.add('watch-option');
+            providerEl.href = `https://www.google.com/search?q=${searchQuery}+on+${providerName}`;
+            providerEl.target = '_blank';
+            providerEl.rel = 'noopener noreferrer';
+
+            providerEl.innerHTML = `
+        <img class="watch-provider-logo" src="${providerLogo}" alt="${providerName}">
+        <span class="watch-provider-name">${providerName}</span>
+    `;
+
+            return providerEl;
+        }
+
+        function displayCast(cast) {
+            const castGrid = document.getElementById('cast-grid');
+            castGrid.innerHTML = '';
+
+            // Display up to 12 cast members
+            const displayCast = cast.slice(0, 12);
+
+            displayCast.forEach(person => {
+                const profilePath = person.profile_path
+                    ? `${IMG_URL}${person.profile_path}`
+                    : '/api/placeholder/100/150';
+
+                const castCard = document.createElement('div');
+                castCard.classList.add('cast-card');
+                castCard.innerHTML = `
+            <img class="cast-img" src="${profilePath}" alt="${person.name}">
+            <div class="cast-info">
+                <h4 class="cast-name">${person.name}</h4>
+                <p class="cast-character">${person.character}</p>
+            </div>
+        `;
+
+                castGrid.appendChild(castCard);
+            });
+
+            if (cast.length === 0) {
+                castGrid.innerHTML = '<p>No cast information available</p>';
+            }
+        }
+        // Add this function for handling actor clicks
+        function displayCast(cast) {
+            const castGrid = document.getElementById('cast-grid');
+            castGrid.innerHTML = '';
+
+            // Display up to 12 cast members
+            const displayCast = cast.slice(0, 12);
+
+            displayCast.forEach(person => {
+                const profilePath = person.profile_path
+                    ? `${IMG_URL}${person.profile_path}`
+                    : '/api/placeholder/100/150';
+
+                const castCard = document.createElement('div');
+                castCard.classList.add('cast-card');
+                castCard.innerHTML = `
+            <img class="cast-img" src="${profilePath}" alt="${person.name}">
+            <div class="cast-info">
+                <h4 class="cast-name">${person.name}</h4>
+                <p class="cast-character">${person.character}</p>
+            </div>
+        `;
+
+                // Add event listener for actor card click
+                castCard.addEventListener('click', (e) => {
+                    e.stopPropagation(); // Prevent event bubbling
+                    closeModal(); // Close the current movie modal
+                    searchPersonMovies(person.id, person.name); // Search for movies with this actor
+                    window.scrollTo(0, 0); // Scroll to top of the page
+                });
+
+                castGrid.appendChild(castCard);
+            });
+
+            if (cast.length === 0) {
+                castGrid.innerHTML = '<p>No cast information available</p>';
+            }
+        }
+
+        // Add this function to search for movies by person/actor
+        async function searchPersonMovies(personId, personName) {
+            try {
+                popularMoviesEl.innerHTML = '<div class="loader"></div>';
+                document.querySelector('.section-title').textContent = `Movies with ${personName}`;
+
+                // Hide top rated section
+                topRatedSectionEl.style.display = 'none';
+                topRatedMoviesEl.style.display = 'none';
+
+                const response = await fetch(`${BASE_URL}/person/${personId}/movie_credits?api_key=${API_KEY}&language=en-US`);
+                const data = await response.json();
+
+                if (data.cast && data.cast.length > 0) {
+                    // Sort by popularity (most popular first)
+                    const sortedMovies = data.cast.sort((a, b) => b.popularity - a.popularity);
+                    displayMovies(sortedMovies, popularMoviesEl);
+                } else {
+                    popularMoviesEl.innerHTML = `<p>No movies found with ${personName}.</p>`;
+                }
+            } catch (error) {
+                console.error('Error searching person movies:', error);
+                popularMoviesEl.innerHTML = '<p>Error loading actor filmography. Please try again later.</p>';
+            }
+        }
+
+        // Fix the close modal function to properly restore scrolling
+        function closeModal() {
+            modal.style.display = 'none';
+            document.body.style.overflow = 'auto'; // Restore scrolling
+        }
+    </script>
+</body>
+
+</html>
